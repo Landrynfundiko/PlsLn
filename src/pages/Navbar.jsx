@@ -1,9 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { auth } from '../config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { cartCount } = useCart();
+  const isAdmin = user && user.email === "landrynfundiko3@gmail.com";
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleNav = (path) => {
+    navigate(path);
+    setMenuOpen(false);
+  };
+
+  const navItems = [
+    { label: 'Accueil', path: '/' },
+    { label: 'Services', path: null },
+    { label: 'À propos', path: null },
+  ];
 
   return (
     <>
@@ -13,70 +39,98 @@ export default function Navbar() {
         transition={{ duration: 0.8, ease: "circOut" }}
         className="navbar"
       >
+        {/* Logo */}
         <motion.div
           whileHover={{ scale: 1.05 }}
-          style={{ cursor: 'pointer', zIndex: 103 }}
+          style={{ cursor: 'pointer' }}
+          onClick={() => handleNav("/")}
+          className="nav-logo"
         >
-          <h3 style={{
-            color: 'white',
-            letterSpacing: '2px',
-            fontWeight: 800
-          }}>
-            PLS<span style={{ color: 'var(--primary)' }}>STORE</span>
-          </h3>
+          <h3>PLS<span style={{ color: 'var(--primary)' }}>STORE</span></h3>
         </motion.div>
 
-        {/* Desktop Menu */}
+        {/* Nav Links — masqués en mobile */}
         <ul className="nav-links">
-          {['Accueil', 'Services', 'À propos'].map((item, i) => (
+          {navItems.map((item, i) => (
             <motion.li key={i} whileHover={{ y: -2 }}>
-              <button>
-                {item}
+              <button onClick={() => item.path ? handleNav(item.path) : null}>
+                {item.label}
               </button>
             </motion.li>
           ))}
+          {isAdmin && (
+            <motion.li whileHover={{ y: -2 }}>
+              <button
+                onClick={() => handleNav("/admin/stock")}
+                style={{ color: 'var(--primary)', fontWeight: 'bold' }}
+              >
+                Admin
+              </button>
+            </motion.li>
+          )}
         </ul>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="mobile-menu-btn"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <FiX /> : <FiMenu />}
-        </button>
+        {/* Icônes + Hamburger */}
+        <div className="nav-icons">
+          <button onClick={() => handleNav("/cart")} style={{ position: 'relative' }} className="nav-icon-btn">
+            <ShoppingCart size={22} />
+            {cartCount > 0 && (
+              <span className="cart-badge">{cartCount}</span>
+            )}
+          </button>
+          <button onClick={() => handleNav("/connexion")} className="nav-icon-btn" style={{ color: user ? 'var(--primary)' : 'white' }}>
+            <User size={22} />
+          </button>
+          {/* Hamburger — visible seulement en mobile */}
+          <button
+            className="nav-icon-btn nav-hamburger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menu"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`mobile-menu ${isOpen ? 'open' : ''}`}
-          >
-            {['Accueil', 'Services', 'À propos'].map((item, i) => (
-              <motion.button
-                key={i}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.1 * i }}
-                onClick={() => setIsOpen(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  fontSize: '2rem',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
-              >
-                {item}
-              </motion.button>
-            ))}
-          </motion.div>
+        {menuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="nav-mobile-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.div
+              className="nav-mobile-menu"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.28 }}
+            >
+              <div className="nav-mobile-links">
+                {navItems.map((item, i) => (
+                  <button key={i} onClick={() => item.path ? handleNav(item.path) : setMenuOpen(false)}>
+                    {item.label}
+                  </button>
+                ))}
+                {isAdmin && (
+                  <button
+                    onClick={() => handleNav("/admin/stock")}
+                    style={{ color: 'var(--primary)', fontWeight: '700' }}
+                  >
+                    Admin
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

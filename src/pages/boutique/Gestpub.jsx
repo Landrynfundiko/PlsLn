@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 import { motion } from 'motion/react';
-import cpuImg from '../assets/cpus.JPG';
-import dn2Img from '../assets/DN2.JPG';
-import cactusImg from '../assets/cactus.AVIF';
+import cpuImg from '../../assets/cpus.JPG';
+import dn2Img from '../../assets/DN2.JPG';
+import cactusImg from '../../assets/cactus.AVIF';
 
 const Gestpub = () => {
   const scrollRef = useRef(null);

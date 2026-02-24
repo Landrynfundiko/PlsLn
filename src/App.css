@@ -29,59 +29,59 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.nav-logo h3 {
+  color: white;
+  letter-spacing: 2px;
+  font-weight: 800;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+}
+
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 40px;
+  gap: clamp(12px, 2.5vw, 40px);
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li button {
   background: none;
   border: none;
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
   font-weight: 500;
   cursor: pointer;
   letter-spacing: 0.5px;
   transition: color 0.3s;
+  white-space: nowrap;
 }
 
 .nav-links li button:hover {
   color: var(--primary);
 }
 
-.mobile-menu-btn {
-  display: none;
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.5vw, 20px);
+}
+
+.nav-icon-btn {
   background: none;
   border: none;
   color: white;
-  font-size: 1.5rem;
   cursor: pointer;
-  z-index: 102;
-}
-
-/* Mobile Menu Overlay */
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: var(--bg);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 30px;
-  z-index: 101;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  position: relative;
 }
 
-.mobile-menu.open {
-  opacity: 1;
-  pointer-events: all;
+.nav-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* --- Hero Section (Corps) --- */
@@ -242,6 +242,7 @@
   background: #0a0a0a;
   color: white;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+
 }
 
 .footer-content {
@@ -268,14 +269,27 @@
 
 
 
-/* --- Responsive Media Queries --- */
+/* =====================================================
+   RESPONSIVE MEDIA QUERIES — Pas de menu hamburger,
+   même contenu adapté à chaque taille d'écran.
+   ===================================================== */
 
+/* --- Tablette large (max 1024px) --- */
+@media (max-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 28px;
+  }
+
+  .gallery-wrapper {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+}
+
+/* --- Tablette (max 900px) --- */
 @media (max-width: 900px) {
-
-  /* Tablet Styles */
   .hero-content {
-    flex-direction: column-reverse;
-    /* Image on top? User preference usually text first on mobile/tablet, but let's see. Column reverse puts text below if HTML is Text then Image. Wait, default HTML is Text then Image. flex-direction: column puts text top. Let's keep text top. */
     flex-direction: column;
     gap: 40px;
     text-align: center;
@@ -285,56 +299,32 @@
     align-items: center;
     display: flex;
     flex-direction: column;
+    max-width: 100%;
   }
 
   .hero-description {
     border-left: none;
     border-top: 2px solid var(--primary);
     padding-left: 0;
-    padding-top: 10px;
+    padding-top: 12px;
   }
 
-  .hero-title {
-    font-size: 3.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Mobile Styles */
-
-  /* Navbar */
-  .nav-links {
-    display: none;
-    /* Hide default links */
+  .hero-image-container {
+    flex: 1 1 auto;
+    max-width: 420px;
+    width: 100%;
   }
 
-  .mobile-menu-btn {
-    display: block;
-    /* Show hamburger */
-  }
-
-  /* Gallery */
   .gallery-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
 
-  .image-card {
-    flex: 0 0 280px;
-    /* Smaller cards */
-    height: 380px;
-  }
-
-  /* Footer */
   .footer-content {
     flex-direction: column;
     text-align: center;
     gap: 30px;
-  }
-
-  .footer-section h4 {
-    justify-content: center;
   }
 
   .footer-section .social-icons {
@@ -342,15 +332,140 @@
   }
 }
 
-@media (max-width: 480px) {
+/* --- Mobile (max 600px) --- */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 4%;
+    height: 65px;
+  }
+
+  .main-wrapper {
+    padding-top: 65px;
+    gap: 60px;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links li button {
+    font-size: 0.72rem;
+  }
+
+  .hero-section {
+    min-height: 80vh;
+    padding: 20px 16px;
+  }
+
   .hero-title {
-    font-size: 2.5rem;
+    font-size: clamp(2.2rem, 8vw, 3rem);
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
   }
 
   .image-card {
-    flex: 0 0 85vw;
-    /* Full width cards */
-    height: 400px;
+    flex: 0 0 78vw;
+    height: 340px;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 8px;
+  }
+
+  .product-name {
+    font-size: 1rem;
+  }
+
+  .product-price {
+    font-size: 1rem;
+  }
+
+  .btq-section {
+    padding: 40px 12px 60px;
+  }
+
+  .btq-header {
+    margin-bottom: 50px;
+  }
+
+  .cart-container {
+    padding: 90px 4% 40px;
+  }
+
+  .cart-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cart-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .cart-item-card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cart-item-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .cart-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .product-detail-container {
+    padding: 90px 16px 40px;
+  }
+
+  .back-nav-btn {
+    top: 75px;
+    left: 16px;
+    font-size: 0.8rem;
+    padding: 8px 14px;
+  }
+
+  .login-card {
+    padding: 28px 20px;
+  }
+
+  .site-footer {
+    padding: 50px 5% 30px;
+  }
+
+  .gallery-wrapper {
+    padding: 0 12px;
+  }
+}
+
+/* --- Très petit mobile (max 380px) --- */
+@media (max-width: 380px) {
+  .nav-links {
+    gap: 6px;
+  }
+
+  .nav-links li button {
+    font-size: 0.65rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .image-card {
+    flex: 0 0 88vw;
+    height: 300px;
   }
 }
 
@@ -504,4 +619,976 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--text-muted);
+}
+
+/* --- Product Detail Page (CmdCard) --- */
+
+.product-detail-container {
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  /* Accounts for fixed navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.05), transparent 70%);
+}
+
+.product-detail-content {
+  display: flex;
+  flex-direction: row;
+  /* Default: Side by side for Desktop */
+  gap: 60px;
+  max-width: 1200px;
+  width: 100%;
+  align-items: flex-start;
+  /* Align top */
+}
+
+/* Image Section (Left) */
+.product-detail-image-wrapper {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-detail-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.4));
+  transition: transform 0.5s ease;
+}
+
+.product-detail-image-wrapper:hover .product-detail-image {
+  transform: scale(1.05) rotate(-2deg);
+}
+
+/* Info Section (Right) */
+.product-detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.product-detail-category {
+  font-size: 0.9rem;
+  color: var(--primary);
+  background: rgba(34, 211, 238, 0.1);
+  padding: 6px 16px;
+  border-radius: 50px;
+  align-self: flex-start;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.product-detail-title {
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #fff, #9ca3af);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.product-detail-price {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 30px;
+  font-family: var(--font-main);
+}
+
+.product-detail-description {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.product-detail-description h3 {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-family: var(--font-main);
+}
+
+/* Actions */
+.product-actions {
+  margin-top: auto;
+}
+
+.order-btn-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 18px 30px;
+  border-radius: 16px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.order-btn-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(37, 211, 102, 0.3);
+}
+
+.back-nav-btn {
+  position: absolute;
+  top: 100px;
+  /* Below navbar */
+  left: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.back-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Responsive Styles for Product Detail */
+@media (max-width: 968px) {
+  .product-detail-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .product-detail-image-wrapper {
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .product-detail-info {
+    width: 100%;
+    max-width: 600px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-detail-category {
+    align-self: center;
+  }
+
+  .back-nav-btn {
+    top: 90px;
+    left: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .connect {
+    justify-content: space-between;
+    height: 1200px;
+  }
+}
+
+/* --- Connection Component Styling --- */
+.login-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.1), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.05), transparent 40%);
+}
+
+.login-card {
+  background: rgba(24, 24, 27, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.login-header h2 {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.login-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.styled-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.styled-input:focus {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.1);
+}
+
+.login-button {
+  background: linear-gradient(135deg, var(--primary) 0%, #0891b2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(34, 211, 238, 0.2);
+  filter: brightness(1.1);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.login-footer span {
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.login-footer span:hover {
+  text-decoration: underline;
+}
+
+/* --- Cart Badge --- */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0a0a0a;
+}
+
+/* --- Cart Component --- */
+.cart-container {
+  min-height: 80vh;
+  padding: 120px 5% 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cart-container.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.empty-cart-content h1 {
+  font-size: 2.5rem;
+  margin: 20px 0 10px;
+  color: white;
+}
+
+.empty-cart-content p {
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+
+.empty-icon-wrapper {
+  color: var(--primary);
+  background: rgba(34, 211, 238, 0.1);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.cart-header h1 {
+  color: white;
+  font-size: 2rem;
+}
+
+.clear-cart-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.clear-cart-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-item-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.cart-item-image {
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.cart-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.item-category {
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cart-item-info h3 {
+  color: white;
+  margin: 4px 0;
+}
+
+.item-price-unit {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.cart-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quantity-controls span {
+  color: white;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+.quantity-controls button {
+  background: none;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.quantity-controls button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: rgba(239, 68, 68, 0.6);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.remove-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.cart-summary-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 120px;
+}
+
+.cart-summary-card h2 {
+  color: white;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  color: var(--text-muted);
+}
+
+.summary-row.total {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 20px;
+}
+
+.summary-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 10px 0;
+}
+
+.free {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.checkout-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+  transition: all 0.3s;
+}
+
+.checkout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+}
+
+.summary-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 15px;
+  line-height: 1.4;
+}
+
+.back-to-shop-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  transition: all 0.3s;
+}
+
+.back-to-shop-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 968px) {
+  .cart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================
+   NAVBAR — HAMBURGER & MOBILE DRAWER
+   ===================================================== */
+
+/* Bouton hamburger — masqué par défaut sur desktop */
+.nav-hamburger {
+  display: none;
+}
+
+/* Backdrop overlay */
+.nav-mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+}
+
+/* Drawer latéral */
+.nav-mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(280px, 85vw);
+  height: 100dvh;
+  background: rgba(24, 24, 27, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 0 40px;
+}
+
+.nav-mobile-links {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+  gap: 4px;
+}
+
+.nav-mobile-links button {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 500;
+  font-family: var(--font-main);
+  cursor: pointer;
+  text-align: left;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: color 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.nav-mobile-links button:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+
+/* =====================================================
+   ADMIN LAYOUT — SIDEBAR RESPONSIVE
+   ===================================================== */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f172a;
+  color: white;
+}
+
+/* Barre mobile — masquée sur desktop */
+.admin-mobile-bar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 150;
+}
+
+.admin-burger-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.admin-burger-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Sidebar commune */
+.admin-sidebar {
+  width: 280px;
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  flex-shrink: 0;
+}
+
+/* Sidebar desktop — toujours visible */
+.admin-sidebar-desktop {
+  position: relative;
+}
+
+/* Sidebar mobile — overlay fixe */
+.admin-sidebar-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: 250;
+  overflow-y: auto;
+}
+
+.admin-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+}
+
+.admin-sidebar-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+}
+
+.admin-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.admin-sidebar-header {
+  margin-bottom: 40px;
+}
+
+.admin-sidebar-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-style: italic;
+  color: var(--primary);
+  margin: 0;
+}
+
+.admin-sidebar-sub {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin: 4px 0 0;
+}
+
+.admin-sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #94a3b8;
+  background: transparent;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.admin-nav-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.admin-nav-link.active {
+  background: rgba(34, 211, 238, 0.1);
+  color: white;
+}
+
+.admin-nav-chevron {
+  margin-left: auto;
+  opacity: 0.5;
+}
+
+.admin-sidebar-footer {
+  margin-top: auto;
+  border-top: 1px solid #334155;
+  padding-top: 24px;
+}
+
+.admin-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 12px;
+}
+
+.admin-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.admin-user-email {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.admin-logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--font-main);
+  transition: background 0.2s;
+}
+
+.admin-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.admin-main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+/* Admin responsive — mobile */
+@media (max-width: 768px) {
+  .admin-sidebar-desktop {
+    display: none;
+  }
+
+  .admin-mobile-bar {
+    display: flex;
+  }
+
+  .admin-main {
+    padding: 80px 16px 40px;
+  }
+}
+
+/* =====================================================
+   INVOICING — GRIDS RESPONSIVE
+   ===================================================== */
+
+.invoice-grid {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 32px;
+}
+
+.invoice-item-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 100px 40px;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .invoice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .invoice-item-row {
+    grid-template-columns: 1fr 70px 40px;
+  }
+
+  /* Cache la colonne prix sur très petit — affiché inline */
+  .invoice-item-row>div:nth-child(3) {
+    display: none;
+  }
+}
+
+/* =====================================================
+   STOCK MANAGEMENT — HEADER & FORM GRID
+   ===================================================== */
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 540px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-header button {
+    width: 100%;
+    justify-content: center;
+  }
 }
