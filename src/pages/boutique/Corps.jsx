@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from 'react-icons/fa';
+import dnImage from '../../assets/DN.PNG';
 
 export default function Corps() {
   return (
@@ -102,7 +103,7 @@ export default function Corps() {
           <motion.img
             animate={{ y: [0, -20, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            src="/src/assets/DN.PNG"
+            src={dnImage}
             alt="Airmax DN"
             style={{
               width: '120%',

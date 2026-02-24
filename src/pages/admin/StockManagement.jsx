@@ -137,49 +137,30 @@ export default function StockManagement() {
     );
 
     return (
-        <div>
+        <div className="admin-stock-page">
             <div className="stock-header">
-                <div>
-                    <h2 style={{ fontSize: '1.875rem', fontWeight: '700', marginBottom: '8px' }}>Gestion de Stock</h2>
-                    <p style={{ color: '#94a3b8' }}>Gérez votre inventaire et vos produits en temps réel.</p>
+                <div className="stock-title-section">
+                    <h2 className="admin-page-title">Gestion de Stock</h2>
+                    <p className="admin-page-subtitle">Gérez votre inventaire et vos produits en temps réel.</p>
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
-                        borderRadius: '12px',
-                        background: 'var(--primary)',
-                        color: 'black',
-                        border: 'none',
-                        fontWeight: '600',
-                        cursor: 'pointer'
-                    }}
+                    className="admin-btn-primary"
                 >
                     <Plus size={20} />
-                    Ajouter un produit
+                    <span>Ajouter un produit</span>
                 </button>
             </div>
 
-            <div style={{ background: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155' }}>
-                <div style={{ position: 'relative', marginBottom: '24px' }}>
-                    <Search size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+            <div className="admin-table-container">
+                <div className="admin-search-container">
+                    <Search size={20} className="admin-search-icon" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
                     <input
                         type="text"
                         placeholder="Rechercher un produit..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{
-                            width: '100%',
-                            padding: '12px 12px 12px 48px',
-                            background: '#0f172a',
-                            border: '1px solid #334155',
-                            borderRadius: '12px',
-                            color: 'white',
-                            fontSize: '1rem'
-                        }}
+                        className="admin-search-input"
                     />
                 </div>
 
@@ -188,47 +169,47 @@ export default function StockManagement() {
                         <Loader2 className="animate-spin" size={32} color="var(--primary)" />
                     </div>
                 ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <div className="admin-table-wrapper">
+                        <table className="admin-table">
                             <thead>
-                                <tr style={{ borderBottom: '1px solid #334155', color: '#94a3b8', fontSize: '0.875rem' }}>
-                                    <th style={{ padding: '16px' }}>Produit</th>
-                                    <th style={{ padding: '16px' }}>Catégorie</th>
-                                    <th style={{ padding: '16px' }}>Prix</th>
-                                    <th style={{ padding: '16px' }}>Stock</th>
-                                    <th style={{ padding: '16px' }}>Status</th>
-                                    <th style={{ padding: '16px' }}>Actions</th>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Catégorie</th>
+                                    <th>Prix</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th style={{ textAlign: 'right' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredProducts.map((product) => (
-                                    <tr key={product.id} style={{ borderBottom: '1px solid #334155', transition: 'background 0.2s' }}>
-                                        <td style={{ padding: '16px' }}>
+                                    <tr key={product.id}>
+                                        <td>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <img src={product.image} alt={product.name} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
                                                 <span style={{ fontWeight: '500' }}>{product.name}</span>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '16px', color: '#94a3b8' }}>{product.category}</td>
-                                        <td style={{ padding: '16px', fontWeight: '600' }}>{product.price}</td>
-                                        <td style={{ padding: '16px' }}>
+                                        <td style={{ color: '#94a3b8' }}>{product.category}</td>
+                                        <td style={{ fontWeight: '600' }}>{product.price}</td>
+                                        <td>
                                             <input
                                                 type="number"
                                                 value={product.stock}
                                                 onChange={(e) => handleUpdateStock(product.id, e.target.value)}
                                                 style={{
                                                     width: '60px',
-                                                    padding: '4px 8px',
+                                                    padding: '6px 8px',
                                                     background: '#0f172a',
                                                     border: '1px solid #334155',
-                                                    borderRadius: '6px',
+                                                    borderRadius: '8px',
                                                     color: 'white'
                                                 }}
                                             />
                                         </td>
-                                        <td style={{ padding: '16px' }}>
+                                        <td>
                                             <span style={{
-                                                padding: '4px 8px',
+                                                padding: '4px 10px',
                                                 borderRadius: '9999px',
                                                 fontSize: '0.75rem',
                                                 fontWeight: '600',
@@ -238,11 +219,12 @@ export default function StockManagement() {
                                                 {product.stock > 10 ? 'En stock' : 'Stock faible'}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '16px' }}>
-                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                        <td>
+                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                                                 <button
                                                     onClick={() => handleDeleteProduct(product.id)}
-                                                    style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                                                    style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '8px', borderRadius: '8px', transition: 'background 0.2s' }}
+                                                    className="action-btn-danger"
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>
@@ -266,45 +248,24 @@ export default function StockManagement() {
             {/* Add Product Modal */}
             <AnimatePresence>
                 {showAddModal && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0,0,0,0.8)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000,
-                        padding: '20px'
-                    }}>
+                    <div className="admin-modal-overlay">
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            style={{
-                                background: '#1e293b',
-                                borderRadius: '24px',
-                                padding: '32px',
-                                width: '100%',
-                                maxWidth: '600px',
-                                border: '1px solid #334155',
-                                maxHeight: '90vh',
-                                overflowY: 'auto'
-                            }}
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="admin-modal-content"
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                                <h3 style={{ fontSize: '1.5rem', fontWeight: '700' }}>Ajouter un produit</h3>
+                            <div className="admin-modal-header">
+                                <h3 className="admin-modal-title">Ajouter un produit</h3>
                                 <button onClick={() => setShowAddModal(false)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
                                     <X size={24} />
                                 </button>
                             </div>
 
-                            <form onSubmit={handleAddProduct} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <form onSubmit={handleAddProduct} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <div className="form-grid-2">
-                                    <div className="input-group">
-                                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Nom du produit</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Nom du produit</label>
                                         <input
                                             required
                                             className="styled-input"
@@ -313,8 +274,8 @@ export default function StockManagement() {
                                             placeholder="Ex: Nike Air Max"
                                         />
                                     </div>
-                                    <div className="input-group">
-                                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Catégorie</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Catégorie</label>
                                         <input
                                             required
                                             className="styled-input"
@@ -326,8 +287,8 @@ export default function StockManagement() {
                                 </div>
 
                                 <div className="form-grid-2">
-                                    <div className="input-group">
-                                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Prix (USD)</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Prix (USD)</label>
                                         <input
                                             required
                                             type="number"
@@ -338,8 +299,8 @@ export default function StockManagement() {
                                             placeholder="0.00"
                                         />
                                     </div>
-                                    <div className="input-group">
-                                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Quantité en stock</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label">Quantité en stock</label>
                                         <input
                                             required
                                             type="number"
@@ -351,8 +312,8 @@ export default function StockManagement() {
                                     </div>
                                 </div>
 
-                                <div className="input-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Description</label>
+                                <div className="admin-form-group">
+                                    <label className="admin-label">Description</label>
                                     <textarea
                                         required
                                         className="styled-input"
@@ -364,17 +325,9 @@ export default function StockManagement() {
                                     />
                                 </div>
 
-                                <div className="input-group">
-                                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem' }}>Image du produit</label>
-                                    <div style={{
-                                        border: '2px dashed #334155',
-                                        borderRadius: '12px',
-                                        padding: '20px',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        position: 'relative',
-                                        background: newProduct.image ? 'rgba(34, 211, 238, 0.05)' : 'transparent'
-                                    }}>
+                                <div className="admin-form-group">
+                                    <label className="admin-label">Image du produit</label>
+                                    <div className={`admin-upload-zone ${newProduct.image ? 'active' : ''}`}>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -382,16 +335,16 @@ export default function StockManagement() {
                                             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
                                         />
                                         {newProduct.image ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                <p style={{ color: 'var(--primary)', fontWeight: '600' }}>{newProduct.image.name}</p>
-                                                <button type="button" onClick={() => setNewProduct({ ...newProduct, image: null })} style={{ background: 'transparent', border: 'none', color: '#ef4444' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                                                <p style={{ color: 'var(--primary)', fontWeight: '600', margin: 0 }}>{newProduct.image.name}</p>
+                                                <button type="button" onClick={() => setNewProduct({ ...newProduct, image: null })} style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#ef4444', padding: '6px', borderRadius: '6px', display: 'flex', cursor: 'pointer' }}>
                                                     <X size={16} />
                                                 </button>
                                             </div>
                                         ) : (
                                             <div style={{ color: '#64748b' }}>
-                                                <Upload size={24} style={{ marginBottom: '8px' }} />
-                                                <p>Cliquez ou glissez une image ici</p>
+                                                <Upload size={24} style={{ marginBottom: '8px', color: 'var(--primary)' }} />
+                                                <p style={{ margin: 0 }}>Cliquez ou glissez une image ici</p>
                                             </div>
                                         )}
                                     </div>
@@ -400,20 +353,8 @@ export default function StockManagement() {
                                 <button
                                     type="submit"
                                     disabled={isUploading}
-                                    style={{
-                                        marginTop: '12px',
-                                        padding: '14px',
-                                        borderRadius: '12px',
-                                        background: 'var(--primary)',
-                                        color: 'black',
-                                        border: 'none',
-                                        fontWeight: '700',
-                                        cursor: isUploading ? 'not-allowed' : 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '10px'
-                                    }}
+                                    className="admin-btn-primary"
+                                    style={{ padding: '16px', fontSize: '1rem' }}
                                 >
                                     {isUploading ? (
                                         <>
@@ -427,6 +368,31 @@ export default function StockManagement() {
                     </div>
                 )}
             </AnimatePresence>
+
+            <style>{`
+                .admin-page-title {
+                    font-size: clamp(1.5rem, 5vw, 1.875rem);
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                }
+                .admin-page-subtitle {
+                    color: #94a3b8;
+                    font-size: clamp(0.875rem, 3vw, 1rem);
+                }
+                .action-btn-danger:hover {
+                    background: rgba(239, 68, 68, 0.1);
+                }
+                @media (max-width: 640px) {
+                    .stock-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 20px;
+                    }
+                    .stock-header button {
+                        width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

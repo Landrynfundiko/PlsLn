@@ -79,31 +79,31 @@ export default function Invoicing() {
     }
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '32px' }}>
-                <h2 style={{ fontSize: '1.875rem', fontWeight: '700', marginBottom: '8px' }}>Nouvelle Facture</h2>
-                <p style={{ color: '#94a3b8' }}>Générez des reçus professionnels pour vos clients.</p>
+        <div className="admin-invoice-page">
+            <div className="invoice-header-section">
+                <h2 className="admin-page-title">Nouvelle Facture</h2>
+                <p className="admin-page-subtitle">Générez des reçus professionnels pour vos clients.</p>
             </div>
 
             <div className="invoice-grid">
-                <div style={{ background: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155' }}>
-                    <div style={{ marginBottom: '24px' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8', fontSize: '0.875rem' }}>Nom du client</label>
-                        <div style={{ position: 'relative' }}>
+                <div className="admin-card invoice-main-card">
+                    <div className="admin-form-group" style={{ marginBottom: '24px' }}>
+                        <label className="admin-label">Nom du client</label>
+                        <div className="admin-search-container" style={{ margin: 0 }}>
                             <User size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
                             <input
                                 type="text"
                                 placeholder="Ex: aganze landry"
                                 value={customerName}
                                 onChange={(e) => setCustomerName(e.target.value)}
-                                style={{ width: '100%', padding: '12px 12px 12px 48px', background: '#0f172a', border: '1px solid #334155', borderRadius: '12px', color: 'white' }}
+                                className="admin-search-input"
                             />
                         </div>
                     </div>
 
-                    <div style={{ marginBottom: '24px' }}>
+                    <div className="invoice-items-section">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Articles</h3>
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', margin: 0 }}>Articles</h3>
                             <button
                                 onClick={addItem}
                                 style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--primary)', background: 'transparent', border: 'none', cursor: 'pointer', fontWeight: '600' }}
@@ -112,56 +112,66 @@ export default function Invoicing() {
                             </button>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div className="invoice-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             {items.map((item, index) => (
-                                <div key={index} className="invoice-item-row">
-                                    <select
-                                        value={item.productId}
-                                        onChange={(e) => updateItem(index, 'productId', e.target.value)}
-                                        style={{ padding: '12px', background: '#0f172a', border: '1px solid #334155', borderRadius: '12px', color: 'white' }}
-                                    >
-                                        {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                                    </select>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={item.quantity}
-                                        onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
-                                        style={{ padding: '12px', background: '#0f172a', border: '1px solid #334155', borderRadius: '12px', color: 'white' }}
-                                    />
-                                    <div style={{ textAlign: 'right', fontWeight: '600' }}>
-                                        {products.find(p => p.id === item.productId) ? (parseFloat(products.find(p => p.id === item.productId).price.replace(',', '.').split(' ')[0]) * item.quantity).toFixed(2) : '0.00'} $
+                                <div key={index} className="invoice-item-row admin-card" style={{ padding: '16px', background: 'rgba(255,255,255,0.02)' }}>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label mobile-only">Article</label>
+                                        <select
+                                            value={item.productId}
+                                            onChange={(e) => updateItem(index, 'productId', e.target.value)}
+                                            style={{ width: '100%', padding: '12px', background: '#0f172a', border: '1px solid #334155', borderRadius: '12px', color: 'white' }}
+                                        >
+                                            {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="admin-form-group">
+                                        <label className="admin-label mobile-only">Quantité</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            value={item.quantity}
+                                            onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
+                                            style={{ width: '100%', padding: '12px', background: '#0f172a', border: '1px solid #334155', borderRadius: '12px', color: 'white' }}
+                                        />
+                                    </div>
+                                    <div className="item-price-total">
+                                        <label className="admin-label mobile-only">Total</label>
+                                        <div style={{ textAlign: 'right', fontWeight: '600', color: 'white' }}>
+                                            {products.find(p => p.id === item.productId) ? (parseFloat(products.find(p => p.id === item.productId).price.replace(',', '.').split(' ')[0]) * item.quantity).toFixed(2) : '0.00'} $
+                                        </div>
                                     </div>
                                     <button
                                         onClick={() => removeItem(index)}
-                                        style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                        style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '8px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.05)' }}
                                     >
                                         <Trash2 size={18} />
                                     </button>
                                 </div>
                             ))}
                             {items.length === 0 && (
-                                <div style={{ textAlign: 'center', padding: '32px', border: '2px dashed #334155', borderRadius: '12px', color: '#64748b' }}>
-                                    Aucun article ajouté.
+                                <div style={{ textAlign: 'center', padding: '40px', border: '2px dashed #334155', borderRadius: '12px', color: '#64748b' }}>
+                                    <Plus size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
+                                    <p style={{ margin: 0 }}>Aucun article ajouté.</p>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <div style={{ background: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155' }}>
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '20px' }}>Résumé</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                <div className="invoice-summary-section">
+                    <div className="admin-card">
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '24px', color: 'white' }}>Résumé</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
                                 <span>Sous-total</span>
-                                <span>{calculateTotal()} $</span>
+                                <span style={{ color: 'white', fontWeight: '500' }}>{calculateTotal()} $</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8' }}>
                                 <span>Taxe (0%)</span>
-                                <span>0.00 $</span>
+                                <span style={{ color: 'white', fontWeight: '500' }}>0.00 $</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #334155', paddingTop: '12px', fontSize: '1.25rem', fontWeight: '700', color: 'var(--primary)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #334155', paddingTop: '16px', fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>
                                 <span>Total</span>
                                 <span>{calculateTotal()} $</span>
                             </div>
@@ -169,21 +179,8 @@ export default function Invoicing() {
                         <button
                             disabled={items.length === 0 || !customerName}
                             onClick={() => setShowReceipt(true)}
-                            style={{
-                                width: '100%',
-                                padding: '14px',
-                                borderRadius: '12px',
-                                background: 'var(--primary)',
-                                color: 'black',
-                                border: 'none',
-                                fontWeight: '700',
-                                cursor: items.length === 0 || !customerName ? 'not-allowed' : 'pointer',
-                                opacity: items.length === 0 || !customerName ? 0.5 : 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px'
-                            }}
+                            className="admin-btn-primary"
+                            style={{ width: '100%', padding: '16px' }}
                         >
                             <Printer size={20} />
                             Générer le reçu
@@ -191,6 +188,41 @@ export default function Invoicing() {
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                .invoice-header-section {
+                    margin-bottom: 32px;
+                }
+                .admin-page-title {
+                    font-size: clamp(1.5rem, 5vw, 1.875rem);
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                }
+                .admin-page-subtitle {
+                    color: #94a3b8;
+                    font-size: clamp(0.875rem, 3vw, 1rem);
+                }
+                .mobile-only {
+                    display: none;
+                }
+                @media (max-width: 768px) {
+                    .invoice-grid {
+                        grid-template-columns: 1fr;
+                    }
+                    .mobile-only {
+                        display: block;
+                    }
+                    .invoice-item-row {
+                        grid-template-columns: 1fr !important;
+                        gap: 16px !important;
+                    }
+                    .item-price-total {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
