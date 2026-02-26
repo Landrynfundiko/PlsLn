@@ -1,9 +1,12 @@
-import React from 'react';
-import { Printer, Download, Share2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Printer, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import toast from 'react-hot-toast';
 
 export default function Receipt({ customerName, items, total }) {
+    const [isDownloading, setIsDownloading] = useState(false);
+
     const date = new Date().toLocaleDateString('fr-FR', {
         year: 'numeric',
         month: 'long',
@@ -21,22 +24,43 @@ export default function Receipt({ customerName, items, total }) {
         if (!element) return;
 
         try {
+            setIsDownloading(true);
+            // Sauvegarder la position de défilement pour éviter les coupures
+            const originalScrollY = window.scrollY;
+            window.scrollTo(0, 0);
+
             const canvas = await html2canvas(element, {
                 scale: 2,
                 logging: false,
-                useCORS: true
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                windowWidth: document.documentElement.scrollWidth,
+                windowHeight: document.documentElement.scrollHeight
             });
 
+            window.scrollTo(0, originalScrollY);
+
             const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            // Utiliser la dimension exacte du canvas pour correspondre à 100% au reçu
+            const pdfWidth = canvas.width / 2;
+            const pdfHeight = canvas.height / 2;
+
+            const pdf = new jsPDF({
+                orientation: pdfWidth > pdfHeight ? 'l' : 'p',
+                unit: 'pt',
+                format: [pdfWidth, pdfHeight]
+            });
 
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`reçu-PLS-STORE-${customerName || 'client'}.pdf`);
+            pdf.save(`Facture-PLS-STORE-${customerName ? customerName.replace(/\s+/g, '-') : 'Client'}.pdf`);
+
+            toast.success("Facture téléchargée avec succès !");
         } catch (error) {
             console.error("Erreur lors de la génération du PDF:", error);
+            toast.error("Échec de la génération du PDF.");
+        } finally {
+            setIsDownloading(false);
         }
     };
 
@@ -52,10 +76,11 @@ export default function Receipt({ customerName, items, total }) {
                 </button>
                 <button
                     onClick={handleDownloadPDF}
+                    disabled={isDownloading}
                     className="admin-btn-primary"
-                    style={{ background: '#334155', color: 'white' }}
+                    style={{ background: '#334155', color: 'white', opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
                 >
-                    <Download size={18} /> <span>Télécharger PDF</span>
+                    <Download size={18} /> <span>{isDownloading ? "Génération..." : "Télécharger PDF"}</span>
                 </button>
             </div>
 
@@ -63,7 +88,7 @@ export default function Receipt({ customerName, items, total }) {
                 <div className="receipt-header">
                     <div>
                         <h1 className="receipt-logo">PLS STORE</h1>
-                        <p className="receipt-subtitle">Boutique de vêtements & Accessoires</p>
+                        <p className="receipt-subtitle">Boutique de Souliers & Accessoires</p>
                     </div>
                     <div className="receipt-meta">
                         <h2 className="receipt-type">FACTURE</h2>
@@ -75,7 +100,7 @@ export default function Receipt({ customerName, items, total }) {
                 <div className="receipt-client-vendeur">
                     <div className="receipt-vendeur">
                         <p className="receipt-label">Vendeur</p>
-                        <p className="receipt-name">Landry Fundiko</p>
+                        <p className="receipt-name">Landry nfundiko</p>
                         <p className="receipt-info">Admin PLS STORE</p>
                     </div>
                     <div className="receipt-client">
@@ -263,13 +288,39 @@ export default function Receipt({ customerName, items, total }) {
                     .desktop-only { display: none; }
                 }
                 @media print {
-                  .no-print { display: none !important; }
-                  body { background: white !important; }
-                  .admin-layout { display: block !important; }
-                  .admin-sidebar { display: none !important; }
-                  .admin-mobile-bar { display: none !important; }
-                  main { padding: 0 !important; margin: 0 !important; }
-                  .receipt-paper { box-shadow: none !important; padding: 0 !important; width: 100% !important; max-width: none !important; }
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    html, body, #root {
+                        width: 100% !important;
+                        height: auto !important;
+                        overflow: visible !important;
+                        background: white !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    body * {
+                        visibility: hidden;
+                    }
+                    #printable-receipt, #printable-receipt * {
+                        visibility: visible;
+                    }
+                    #printable-receipt {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        padding: 20px !important;
+                        margin: 0 !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                    }
+                    .no-print { 
+                        display: none !important; 
+                    }
                 }
             `}</style>
         </div>
