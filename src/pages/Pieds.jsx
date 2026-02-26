@@ -6,7 +6,9 @@ export default function Pieds() {
         <footer className="site-footer">
             <div className="footer-content">
                 <div className="footer-section">
-                    <h4 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>PLS<span style={{ color: 'var(--primary)' }}>STORE</span></h4>
+                    <h4 style={{ fontSize: '1.5rem', marginBottom: '20px', fontFamily: "'Playfair Display', serif" }}>
+                        PLS<span style={{ color: '#00ffcc', fontFamily: "'Outfit', sans-serif" }}>STORE</span>
+                    </h4>
                     <p style={{ color: 'var(--text-muted)' }}>La destination ultime pour le style et l'innovation.</p>
                 </div>
 

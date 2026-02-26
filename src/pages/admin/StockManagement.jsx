@@ -154,7 +154,7 @@ export default function StockManagement() {
 
             <div className="admin-table-container">
                 <div className="admin-search-container">
-                    <Search size={20} className="admin-search-icon" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+                    <Search size={20} className="admin-search-icon" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     <input
                         type="text"
                         placeholder="Rechercher un produit..."
@@ -190,7 +190,7 @@ export default function StockManagement() {
                                                 <span style={{ fontWeight: '500' }}>{product.name}</span>
                                             </div>
                                         </td>
-                                        <td style={{ color: '#94a3b8' }}>{product.category}</td>
+                                        <td style={{ color: 'var(--text-muted)' }}>{product.category}</td>
                                         <td style={{ fontWeight: '600' }}>{product.price}</td>
                                         <td>
                                             <input
@@ -200,8 +200,8 @@ export default function StockManagement() {
                                                 style={{
                                                     width: '60px',
                                                     padding: '6px 8px',
-                                                    background: '#0f172a',
-                                                    border: '1px solid #334155',
+                                                    background: 'var(--bg)',
+                                                    border: '1px solid var(--border)',
                                                     borderRadius: '8px',
                                                     color: 'white'
                                                 }}
@@ -234,7 +234,7 @@ export default function StockManagement() {
                                 ))}
                                 {filteredProducts.length === 0 && (
                                     <tr>
-                                        <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#64748b' }}>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
                                             Aucun produit trouvé.
                                         </td>
                                     </tr>
@@ -257,7 +257,7 @@ export default function StockManagement() {
                         >
                             <div className="admin-modal-header">
                                 <h3 className="admin-modal-title">Ajouter un produit</h3>
-                                <button onClick={() => setShowAddModal(false)} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+                                <button onClick={() => setShowAddModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
                                     <X size={24} />
                                 </button>
                             </div>
@@ -342,7 +342,7 @@ export default function StockManagement() {
                                                 </button>
                                             </div>
                                         ) : (
-                                            <div style={{ color: '#64748b' }}>
+                                            <div style={{ color: 'var(--text-muted)' }}>
                                                 <Upload size={24} style={{ marginBottom: '8px', color: 'var(--primary)' }} />
                                                 <p style={{ margin: 0 }}>Cliquez ou glissez une image ici</p>
                                             </div>
@@ -376,7 +376,7 @@ export default function StockManagement() {
                     margin-bottom: 8px;
                 }
                 .admin-page-subtitle {
-                    color: #94a3b8;
+                    color: var(--text-muted);
                     font-size: clamp(0.875rem, 3vw, 1rem);
                 }
                 .action-btn-danger:hover {

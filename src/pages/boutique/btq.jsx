@@ -72,7 +72,7 @@ const Btq = () => {
     }
 
     return (
-        <section className="btq-section">
+        <section id="boutique" className="btq-section">
             <div className="btq-header">
                 <motion.h2
                     className="section-title"
@@ -98,7 +98,7 @@ const Btq = () => {
                     <ProductCard key={product.id} product={product} />
                 ))}
                 {products.length === 0 && (
-                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#94a3b8' }}>
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
                         Aucun produit disponible pour le moment.
                     </div>
                 )}

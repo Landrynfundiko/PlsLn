@@ -28,8 +28,10 @@ const Gestpub = () => {
     <div className="gallery-wrapper">
       <div className="gallery-header">
         <div>
-          <h2 style={{ fontSize: '2rem' }}>Commandes <span style={{ color: 'var(--primary)' }}>Récentes</span></h2>
-          <p style={{ color: 'var(--text-muted)', marginTop: '5px' }}>Voici une sélection des paires les plus commandées le mois dernier</p>
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontFamily: "'Playfair Display', serif" }}>
+            Commandes <span style={{ color: '#00ffcc', fontFamily: "'Outfit', sans-serif" }}>Récentes</span>
+          </h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '10px', fontSize: '1.1rem' }}>Voici une sélection des paires les plus commandées le mois dernier</p>
         </div>
 
         <div className="gallery-controls">

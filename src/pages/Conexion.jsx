@@ -63,7 +63,7 @@ export default function Conexion() {
             transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.2 }}
             style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}
           >
-            <div style={{ padding: '15px', background: 'rgba(34, 211, 238, 0.1)', borderRadius: '50%' }}>
+            <div style={{ padding: '15px', background: 'rgba(199, 206, 105, 0.1)', borderRadius: '50%' }}>
               {isRegistering ? <UserPlus size={32} color="var(--primary)" /> : <LogIn size={32} color="var(--primary)" />}
             </div>
           </motion.div>

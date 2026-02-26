@@ -78,7 +78,7 @@ export default function Receipt({ customerName, items, total }) {
                     onClick={handleDownloadPDF}
                     disabled={isDownloading}
                     className="admin-btn-primary"
-                    style={{ background: '#334155', color: 'white', opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
+                    style={{ background: 'var(--border)', color: 'white', opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
                 >
                     <Download size={18} /> <span>{isDownloading ? "Génération..." : "Télécharger PDF"}</span>
                 </button>
@@ -154,7 +154,7 @@ export default function Receipt({ customerName, items, total }) {
 
                 <div className="receipt-thanks">
                     <p style={{ fontWeight: '600', marginBottom: '8px' }}>Merci de votre confiance !</p>
-                    <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>Cette facture est générée numériquement et est valable sans signature.</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>Cette facture est générée numériquement et est valable sans signature.</p>
                 </div>
             </div>
 
@@ -187,11 +187,11 @@ export default function Receipt({ customerName, items, total }) {
                     font-weight: 800;
                     font-style: italic;
                     margin: 0;
-                    color: #0f172a;
+                    color: var(--bg);
                     line-height: 1;
                 }
                 .receipt-subtitle {
-                    color: #64748b;
+                    color: var(--text-muted);
                     margin: 8px 0 0;
                     font-size: 0.9rem;
                 }
@@ -206,7 +206,7 @@ export default function Receipt({ customerName, items, total }) {
                     margin: 0 0 8px 0;
                 }
                 .receipt-number, .receipt-date {
-                    color: #64748b;
+                    color: var(--text-muted);
                     margin: 4px 0 0;
                     font-size: 0.9rem;
                 }
@@ -217,7 +217,7 @@ export default function Receipt({ customerName, items, total }) {
                     margin-bottom: clamp(30px, 8vw, 60px);
                 }
                 .receipt-label {
-                    color: #94a3b8;
+                    color: var(--text-muted);
                     font-size: 0.75rem;
                     font-weight: 700;
                     text-transform: uppercase;
@@ -229,14 +229,14 @@ export default function Receipt({ customerName, items, total }) {
                     margin: 0;
                 }
                 .receipt-info {
-                    color: #64748b;
+                    color: var(--text-muted);
                     margin: 4px 0 0;
                     font-size: 0.9rem;
                 }
                 .receipt-table-wrapper {
                     overflow-x: auto;
                     margin-bottom: 40px;
-                    border-bottom: 2px solid #0f172a;
+                    border-bottom: 2px solid var(--bg);
                 }
                 .receipt-table {
                     width: 100%;
@@ -248,7 +248,7 @@ export default function Receipt({ customerName, items, total }) {
                     text-align: left;
                     font-size: 0.75rem;
                     text-transform: uppercase;
-                    border-bottom: 2px solid #0f172a;
+                    border-bottom: 2px solid var(--bg);
                 }
                 .receipt-table td {
                     padding: 16px 0;
@@ -268,7 +268,7 @@ export default function Receipt({ customerName, items, total }) {
                     margin-bottom: 8px;
                 }
                 .receipt-summary-row.total {
-                    border-top: 2px solid #0f172a;
+                    border-top: 2px solid var(--bg);
                     padding-top: 16px;
                     margin-top: 12px;
                     font-size: 1.25rem;

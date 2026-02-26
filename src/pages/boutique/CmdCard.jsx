@@ -113,8 +113,8 @@ export default function CmdCard() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <span className="product-detail-category">{product.category}</span>
-          <h1 className="product-detail-title">{product.name}</h1>
-          <p className="product-detail-price">{product.price}</p>
+          <h1 className="product-detail-title" style={{ fontFamily: "'Playfair Display', serif" }}>{product.name}</h1>
+          <p className="product-detail-price" style={{ color: '#ff007f', fontWeight: '800' }}>{product.price}</p>
 
           <div className="product-detail-description">
             <h3>Description</h3>

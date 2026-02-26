@@ -2,12 +2,20 @@
     --font-main: 'Outfit', sans-serif;
     --font-serif: 'Playfair Display', serif;
 
-    --primary: #22d3ee;
-    --accent: #818cf8;
-    --bg: #0f0f11;
-    --surface: #18181b;
-    --text: #f4f4f5;
-    --text-muted: #a1a1aa;
+    /* Modern Earthy Palette */
+    --primary: #C7CE69;
+    /* Lime Green */
+    --accent: #BE361D;
+    /* Rust Red */
+    --bg: #1A1412;
+    /* Deep Coffee / Dark Brown */
+    --surface: #2D2018;
+    /* Lighter Coffee */
+    --text: #FDFCF0;
+    /* Warm Cream */
+    --text-muted: #A69F88;
+    /* Muted Beige */
+    --border: rgba(199, 206, 105, 0.1);
 
     color-scheme: dark;
 }

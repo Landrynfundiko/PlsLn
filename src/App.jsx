@@ -13,6 +13,7 @@ import { CartProvider } from './context/CartContext'
 import AdminLayout from './pages/admin/AdminLayout'
 import StockManagement from './pages/admin/StockManagement'
 import Invoicing from './pages/admin/Invoicing'
+import SalesHistory from './pages/admin/SalesHistory'
 import { Navigate } from 'react-router-dom'
 import { auth } from './config/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -36,7 +37,7 @@ const AdminRoute = ({ children }) => {
   const isAdmin = user && user.email === "landrynfundiko3@gmail.com";
 
   if (!isAdmin) {
-    return <Navigate to="/connexion" />;
+    return <Navigate to="/" />;
   }
 
   return children;
@@ -62,6 +63,7 @@ function App() {
             <Route index element={<Navigate to="/admin/stock" />} />
             <Route path="stock" element={<StockManagement />} />
             <Route path="facturation" element={<Invoicing />} />
+            <Route path="historique" element={<SalesHistory />} />
           </Route>
         </Routes>
       </div>

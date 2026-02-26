@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
     Package,
     Receipt,
+    History,
     LogOut,
     ChevronRight,
     User,
@@ -31,6 +32,7 @@ export default function AdminLayout() {
     const navItems = [
         { path: '/admin/stock', icon: Package, label: 'Gestion Stock' },
         { path: '/admin/facturation', icon: Receipt, label: 'Facturation' },
+        { path: '/admin/historique', icon: History, label: 'Historique Ventes' },
     ];
 
     const SidebarContent = () => (

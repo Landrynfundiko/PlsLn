@@ -38,6 +38,12 @@ export default function Navbar() {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: "circOut" }}
         className="navbar"
+        style={{
+          background: 'rgba(15, 15, 26, 0.65)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+        }}
       >
         {/* Logo */}
         <motion.div
@@ -46,7 +52,7 @@ export default function Navbar() {
           onClick={() => handleNav("/")}
           className="nav-logo"
         >
-          <h3>PLS<span style={{ color: 'var(--primary)' }}>STORE</span></h3>
+          <h3 style={{ fontFamily: "'Playfair Display', serif" }}>PLS<span style={{ color: '#00ffcc' }}>STORE</span></h3>
         </motion.div>
 
         {/* Nav Links — masqués en mobile */}
@@ -62,7 +68,7 @@ export default function Navbar() {
             <motion.li whileHover={{ y: -2 }}>
               <button
                 onClick={() => handleNav("/admin/stock")}
-                style={{ color: 'var(--primary)', fontWeight: 'bold' }}
+                style={{ color: '#ff007f', fontWeight: '800' }}
               >
                 Admin
               </button>
