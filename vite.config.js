@@ -6,34 +6,77 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      // 1. 'autoUpdate' force l'application à se mettre à jour dès qu'une nouveauté est disponible
+      // Force la mise à jour automatique dès qu'une nouvelle version est disponible
       registerType: 'autoUpdate',
 
-      // 2. Cette option indique au plugin de générer automatiquement le Service Worker de mise en cache
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'], // Types de fichiers à stocker pour le hors-ligne
+      // Injecte le service worker dans le build
+      injectRegister: 'auto',
+
+      // Active le service worker en développement pour tester le PWA localement
+      devOptions: {
+        enabled: true,
+        type: 'classic'
       },
 
-      includeAssets: ['favicon.ico', 'logo.png'],
-      manifest: {
-        name: 'PLS Shoe Store',
-        short_name: 'ShoeStore',
-        description: 'La meilleure boutique de chaussures en ligne',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
-        display: 'standalone',
-        start_url: '/',
-        icons: [
+      // Workbox : mise en cache des assets pour le mode hors-ligne
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp,avif,woff2}'],
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        runtimeCaching: [
           {
-            src: 'plslog.png',
-            sizes: '192x192',
-            type: 'image/png'
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
           },
           {
-            src: 'plslog.png',
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gstatic-fonts-cache',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] }
+            }
+          }
+        ]
+      },
+
+      includeAssets: ['plslog.png', 'icon-192.png', 'icon-512.png'],
+
+      manifest: {
+        name: 'PLS Store – Sneakers & Chaussures',
+        short_name: 'PLS Store',
+        description: 'La meilleure boutique de chaussures en ligne. Sneakers Nike, Adidas, Travis Scott.',
+        theme_color: '#111111',
+        background_color: '#111111',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        lang: 'fr',
+        categories: ['shopping', 'lifestyle'],
+        icons: [
+          {
+            src: 'icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'icon-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'any'
+          },
+          {
+            src: 'icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       }
