@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
-import Conexion from './pages/Conexion'
-import AdminLayout from './pages/admin/AdminLayout'
-import Stats from './pages/admin/Stats'
-import StockManagement from './pages/admin/StockManagement'
-import Invoicing from './pages/admin/Invoicing'
-import SalesHistory from './pages/admin/SalesHistory'
+const Conexion = lazy(() => import('./pages/Conexion'))
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
+const Stats = lazy(() => import('./pages/admin/Stats'))
+const StockManagement = lazy(() => import('./pages/admin/StockManagement'))
+const Invoicing = lazy(() => import('./pages/admin/Invoicing'))
+const SalesHistory = lazy(() => import('./pages/admin/SalesHistory'))
 import { useAuth } from './context/AuthContext'
 
 const ADMIN_EMAIL = "landrynfundiko3@gmail.com";
@@ -63,25 +63,27 @@ const RootRedirect = () => {
 function App() {
   return (
     <div className="app-container">
-      <Routes>
-        {/* Racine */}
-        <Route path="/" element={<RootRedirect />} />
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          {/* Racine */}
+          <Route path="/" element={<RootRedirect />} />
 
-        {/* Connexion — si déjà connecté, redirige vers admin */}
-        <Route path="/connexion" element={<PublicRoute><Conexion /></PublicRoute>} />
+          {/* Connexion — si déjà connecté, redirige vers admin */}
+          <Route path="/connexion" element={<PublicRoute><Conexion /></PublicRoute>} />
 
-        {/* Espace Administration */}
-        <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route index element={<Navigate to="/admin/stats" replace />} />
-          <Route path="stats" element={<Stats />} />
-          <Route path="stock" element={<StockManagement />} />
-          <Route path="facturation" element={<Invoicing />} />
-          <Route path="historique" element={<SalesHistory />} />
-        </Route>
+          {/* Espace Administration */}
+          <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route index element={<Navigate to="/admin/stats" replace />} />
+            <Route path="stats" element={<Stats />} />
+            <Route path="stock" element={<StockManagement />} />
+            <Route path="facturation" element={<Invoicing />} />
+            <Route path="historique" element={<SalesHistory />} />
+          </Route>
 
-        {/* Toute route inconnue → redirection intelligente */}
-        <Route path="*" element={<RootRedirect />} />
-      </Routes>
+          {/* Toute route inconnue → redirection intelligente */}
+          <Route path="*" element={<RootRedirect />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

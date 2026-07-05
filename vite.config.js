@@ -45,7 +45,7 @@ export default defineConfig({
         ]
       },
 
-      includeAssets: ['plslog.png', 'icon-192.png', 'icon-512.png'],
+      includeAssets: ['icon-192.png', 'icon-512.png'],
 
       manifest: {
         name: 'PLS Store – Sneakers & Chaussures',
@@ -61,19 +61,19 @@ export default defineConfig({
         categories: ['shopping', 'lifestyle'],
         icons: [
           {
-            src: 'icon-192.png',
+            src: '/icon-192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'icon-512.png',
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'icon-512.png',
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -81,5 +81,48 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+
+          const pkgPath = id.split('node_modules/').pop();
+          const pkgName = pkgPath.startsWith('@')
+            ? pkgPath.split('/').slice(0, 2).join('/')
+            : pkgPath.split('/')[0];
+
+          switch (pkgName) {
+            case 'react':
+            case 'react-dom':
+            case 'react-router-dom':
+              return 'vendor_react';
+            case '@mui/material':
+            case '@mui/icons-material':
+            case '@emotion/react':
+            case '@emotion/styled':
+              return 'vendor_mui';
+            case 'firebase':
+              return 'vendor_firebase';
+            case 'framer-motion':
+              return 'vendor_motion';
+            case 'lucide-react':
+            case 'react-icons':
+              return 'vendor_icons';
+            case 'html2canvas':
+              return 'vendor_html2canvas';
+            case 'jspdf':
+              return 'vendor_jspdf';
+            case 'react-hot-toast':
+              return 'vendor_toast';
+            default:
+              return undefined;
+          }
+        }
+      }
+    }
+  }
 });
