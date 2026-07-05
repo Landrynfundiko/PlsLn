@@ -20,6 +20,23 @@
     color-scheme: dark;
 }
 
+/* Light Theme */
+:root[data-theme="light"] {
+    --bg: #FDFCF0;
+    /* Warm Cream */
+    --surface: #F5F2DF;
+    /* Slightly darker beige/cream */
+    --text: #1A1412;
+    /* Deep Coffee / Dark Brown */
+    --text-muted: #6B5E55;
+    /* Muted Earthy Brown */
+    --border: rgba(26, 20, 18, 0.08);
+    /* Soft border using dark coffee */
+    --primary: #8A932D;
+    /* Olive Green for better contrast on light background */
+    color-scheme: light;
+}
+
 body {
     margin: 0;
     min-width: 320px;
@@ -28,6 +45,7 @@ body {
     background-color: var(--bg);
     color: var(--text);
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,

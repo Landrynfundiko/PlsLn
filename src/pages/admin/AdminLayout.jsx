@@ -8,16 +8,21 @@ import {
     ChevronRight,
     User,
     Menu,
-    X
+    X,
+    BarChart3,
+    Sun,
+    Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import toast from 'react-hot-toast';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function AdminLayout() {
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { theme, toggleTheme } = useTheme();
 
     const handleLogout = async () => {
         try {
@@ -30,6 +35,7 @@ export default function AdminLayout() {
     };
 
     const navItems = [
+        { path: '/admin/stats', icon: BarChart3, label: 'Tableau de Bord' },
         { path: '/admin/stock', icon: Package, label: 'Gestion Stock' },
         { path: '/admin/facturation', icon: Receipt, label: 'Facturation' },
         { path: '/admin/historique', icon: History, label: 'Historique Ventes' },
@@ -60,6 +66,11 @@ export default function AdminLayout() {
             </nav>
 
             <div className="admin-sidebar-footer">
+                <button onClick={toggleTheme} className="theme-toggle-btn">
+                    {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                    <span>{theme === 'dark' ? 'Mode Clair' : 'Mode Sombre'}</span>
+                </button>
+                
                 <div className="admin-sidebar-user">
                     <div className="admin-user-avatar">
                         <User size={20} color="black" />

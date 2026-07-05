@@ -78,7 +78,7 @@ export default function Receipt({ customerName, items, total }) {
                     onClick={handleDownloadPDF}
                     disabled={isDownloading}
                     className="admin-btn-primary"
-                    style={{ background: 'var(--border)', color: 'white', opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
+                    style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)', opacity: isDownloading ? 0.7 : 1, cursor: isDownloading ? 'not-allowed' : 'pointer' }}
                 >
                     <Download size={18} /> <span>{isDownloading ? "Génération..." : "Télécharger PDF"}</span>
                 </button>

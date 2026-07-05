@@ -1317,11 +1317,29 @@
    ADMIN LAYOUT — SIDEBAR RESPONSIVE
    ===================================================== */
 
+/* Global transitions for theme elements */
+.admin-layout,
+.admin-sidebar,
+.admin-card,
+.admin-table-container,
+.admin-table th,
+.admin-table td,
+.admin-table tr:hover td,
+.admin-mobile-bar,
+.admin-burger-btn,
+.admin-search-input,
+.admin-modal-content,
+.admin-nav-link,
+.theme-toggle-btn,
+.admin-sidebar-close {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 .admin-layout {
   display: flex;
   min-height: 100vh;
   background: var(--bg);
-  color: white;
+  color: var(--text);
 }
 
 /* Barre mobile — masquée sur desktop */
@@ -1343,18 +1361,21 @@
 .admin-burger-btn {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8px;
   border-radius: 8px;
-  transition: background 0.2s;
 }
 
 .admin-burger-btn:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="light"] .admin-burger-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* Sidebar commune */
@@ -1405,7 +1426,11 @@
 
 .admin-sidebar-close:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: white;
+  color: var(--text);
+}
+
+:root[data-theme="light"] .admin-sidebar-close:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .admin-sidebar-header {
@@ -1442,23 +1467,91 @@
   text-decoration: none;
   color: var(--text-muted);
   background: transparent;
-  transition: all 0.2s;
   font-weight: 500;
 }
 
 .admin-nav-link:hover {
   background: rgba(255, 255, 255, 0.05);
-  color: white;
+  color: var(--text);
+}
+
+:root[data-theme="light"] .admin-nav-link:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .admin-nav-link.active {
-  background: rgba(199, 206, 105, 0.1);
-  color: white;
+  background: rgba(199, 206, 105, 0.15);
+  color: var(--primary);
 }
 
 .admin-nav-chevron {
   margin-left: auto;
   opacity: 0.5;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-weight: 500;
+  font-family: var(--font-main);
+  width: 100%;
+  margin-bottom: 8px;
+  justify-content: flex-start;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+:root[data-theme="light"] .theme-toggle-btn {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:root[data-theme="light"] .theme-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text);
+}
+
+/* Floating Theme Toggle (Login page) */
+.theme-toggle-floating {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+}
+
+.theme-toggle-floating:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.05);
+}
+
+:root[data-theme="light"] .theme-toggle-floating {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:root[data-theme="light"] .theme-toggle-floating:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .admin-sidebar-footer {

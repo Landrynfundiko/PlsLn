@@ -73,42 +73,185 @@ export default function SalesHistory() {
         }
     };
 
-    const handleDownloadHistoryPDF = async () => {
-        const element = document.getElementById('sales-history-table');
-        if (!element || sales.length === 0) {
+    const handleDownloadHistoryPDF = () => {
+        if (sales.length === 0) {
             toast.error("Aucune donnée à exporter");
             return;
         }
 
         try {
             setIsDownloading(true);
-            const canvas = await html2canvas(element, {
-                scale: 2,
-                logging: false,
-                useCORS: true,
-                backgroundColor: '#0f0f1a' // Correspond au fond de l'admin
-            });
 
-            const imgData = canvas.toDataURL('image/png');
-            const pdfWidth = canvas.width / 2;
-            const pdfHeight = canvas.height / 2;
+            const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = pdf.internal.pageSize.getHeight();
+            const margin = 15;
+            const today = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
 
-            const pdf = new jsPDF({
-                orientation: pdfWidth > pdfHeight ? 'l' : 'p',
-                unit: 'pt',
-                format: [pdfWidth, pdfHeight]
-            });
+            // ── Header background
+            pdf.setFillColor(26, 20, 18);
+            pdf.rect(0, 0, pageW, 28, 'F');
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`Historique-Ventes_${new Date().toLocaleDateString('fr-FR').replace(/\//g, '-')}.pdf`);
+            // ── Brand title
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(16);
+            pdf.setTextColor(199, 206, 105);
+            pdf.text('PLS STORE', margin, 17);
 
-            toast.success("Historique téléchargé !");
+            // ── Document subtitle (right)
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(9);
+            pdf.setTextColor(166, 159, 136);
+            pdf.text('RAPPORT D\'HISTORIQUE DES VENTES', pageW - margin, 12, { align: 'right' });
+            pdf.text(`Généré le ${today}`, pageW - margin, 19, { align: 'right' });
+
+            // ── Summary bar
+            const totalCA = sales.reduce((s, v) => s + (Number(v.total) || 0), 0);
+            const totalVentes = sales.length;
+            pdf.setFillColor(45, 32, 24);
+            pdf.rect(0, 28, pageW, 18, 'F');
+            pdf.setFont('helvetica', 'bold');
+            pdf.setFontSize(9);
+            pdf.setTextColor(255, 255, 255);
+            pdf.text(`Nombre de ventes : ${totalVentes}`, margin, 39);
+            pdf.text(`Chiffre d'affaires total : ${totalCA.toFixed(2)} USD`, margin + 70, 39);
+
+            // ── Table setup
+            let y = 55;
+            const colWidths = [38, 48, 52, 115, 25]; // Date, Client, Total, Articles, #
+            const colX = [margin];
+            for (let i = 0; i < colWidths.length - 1; i++) {
+                colX.push(colX[i] + colWidths[i]);
+            }
+            const headers = ['Date', 'Client', 'Total (USD)', 'Articles vendus', '#'];
+
+            const drawTableHeader = () => {
+                pdf.setFillColor(26, 20, 18);
+                pdf.rect(margin, y - 6, pageW - margin * 2, 10, 'F');
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(8);
+                pdf.setTextColor(199, 206, 105);
+                headers.forEach((h, i) => {
+                    pdf.text(h, colX[i] + 2, y);
+                });
+                y += 5;
+                // Separator line
+                pdf.setDrawColor(199, 206, 105);
+                pdf.setLineWidth(0.3);
+                pdf.line(margin, y, pageW - margin, y);
+                y += 4;
+            };
+
+            drawTableHeader();
+
+            // ── Rows
+            let rowIndex = 0;
+            for (const sale of filteredSales) {
+                // Estimate row height
+                const itemsText = sale.items?.map(i => `${i.quantity}x ${i.name}`).join(', ') || '-';
+                const wrappedItems = pdf.splitTextToSize(itemsText, colWidths[3] - 4);
+                const rowH = Math.max(7, wrappedItems.length * 4.5 + 3);
+
+                // Page break check
+                if (y + rowH > pageH - 20) {
+                    pdf.addPage();
+                    // Repeat header background on new page
+                    pdf.setFillColor(26, 20, 18);
+                    pdf.rect(0, 0, pageW, 28, 'F');
+                    pdf.setFont('helvetica', 'bold');
+                    pdf.setFontSize(16);
+                    pdf.setTextColor(199, 206, 105);
+                    pdf.text('PLS STORE', margin, 17);
+                    pdf.setFont('helvetica', 'normal');
+                    pdf.setFontSize(9);
+                    pdf.setTextColor(166, 159, 136);
+                    pdf.text(`Suite - page ${pdf.internal.getNumberOfPages()}`, pageW - margin, 19, { align: 'right' });
+                    y = 42;
+                    drawTableHeader();
+                }
+
+                // Alternating row bg
+                if (rowIndex % 2 === 0) {
+                    pdf.setFillColor(248, 248, 248);
+                    pdf.rect(margin, y - 4, pageW - margin * 2, rowH, 'F');
+                }
+
+                // Row data
+                const dateStr = sale.date
+                    ? new Date(sale.date).toLocaleDateString('fr-FR')
+                    : '-';
+                const clientStr = sale.customerName || 'Client Inconnu';
+                const totalStr = `${(Number(sale.total) || 0).toFixed(2)} $`;
+                const numStr = String(rowIndex + 1);
+
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(8);
+                pdf.setTextColor(40, 40, 40);
+
+                pdf.text(dateStr, colX[0] + 2, y + 1);
+                pdf.text(pdf.splitTextToSize(clientStr, colWidths[1] - 4), colX[1] + 2, y + 1);
+                pdf.setFont('helvetica', 'bold');
+                pdf.setTextColor(130, 100, 20);
+                pdf.text(totalStr, colX[2] + 2, y + 1);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setTextColor(40, 40, 40);
+                pdf.text(wrappedItems, colX[3] + 2, y + 1);
+                pdf.setTextColor(140, 140, 140);
+                pdf.text(numStr, colX[4] + 2, y + 1);
+
+                // Bottom row separator
+                pdf.setDrawColor(220, 220, 220);
+                pdf.setLineWidth(0.1);
+                pdf.line(margin, y + rowH - 2, pageW - margin, y + rowH - 2);
+
+                y += rowH;
+                rowIndex++;
+            }
+
+            // ── Footer
+            const footerY = pageH - 8;
+            pdf.setFontSize(7);
+            pdf.setTextColor(160, 160, 160);
+            pdf.text(`PLS STORE — Rapport confidentiel généré le ${today}`, margin, footerY);
+            pdf.text(`Page ${pdf.internal.getNumberOfPages()}`, pageW - margin, footerY, { align: 'right' });
+
+            const filename = `Historique-Ventes_PLS_${new Date().toISOString().slice(0, 10)}.pdf`;
+            pdf.save(filename);
+            toast.success('Rapport PDF téléchargé avec succès !');
         } catch (error) {
-            console.error("Erreur PDF:", error);
-            toast.error("Échec de la génération du PDF.");
+            console.error('Erreur génération PDF:', error);
+            toast.error('Échec de la génération du PDF.');
         } finally {
             setIsDownloading(false);
         }
+    };
+
+    const handleDownloadHistoryCSV = () => {
+        if (sales.length === 0) {
+            toast.error("Aucune donnée à exporter");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "Date,Client,Articles,Total (USD)\n";
+
+        sales.forEach(sale => {
+            const dateStr = sale.date ? new Date(sale.date).toLocaleString('fr-FR').replace(',', '') : 'Inconnue';
+            const client = sale.customerName?.replace(/"/g, '""') || 'Client Inconnu';
+            const itemsList = sale.items?.map(i => `${i.quantity}x ${i.name}`).join(' | ').replace(/"/g, '""') || '';
+            const total = sale.total || 0;
+            
+            csvContent += `"${dateStr}","${client}","${itemsList}",${total}\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Historique-Ventes_PLS_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success("Historique des ventes CSV téléchargé !");
     };
 
     const filteredSales = sales.filter(s =>
@@ -126,10 +269,10 @@ export default function SalesHistory() {
                     onClick={handleDownloadHistoryPDF}
                     disabled={isDownloading || sales.length === 0}
                     className="admin-btn-primary"
-                    style={{ background: 'var(--primary)', color: 'black' }}
+                    style={{ background: 'var(--primary)', color: 'black', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
                     {isDownloading ? <Loader2 className="animate-spin" size={20} /> : <Download size={20} />}
-                    <span>{isDownloading ? 'Génération PDF...' : 'Exporter en PDF'}</span>
+                    <span>{isDownloading ? 'Génération PDF...' : 'Télécharger le rapport PDF'}</span>
                 </button>
             </div>
 
@@ -152,7 +295,7 @@ export default function SalesHistory() {
                 ) : (
                     <div className="admin-table-wrapper" id="sales-history-table" style={{ padding: '20px', background: 'var(--admin-card-bg)', borderRadius: '12px' }}>
                         <div className="pdf-header" style={{ display: isDownloading ? 'block' : 'none', marginBottom: '20px', textAlign: 'center' }}>
-                            <h2 style={{ color: 'white' }}>Rapport des Ventes PLS STORE</h2>
+                            <h2 style={{ color: 'var(--text)' }}>Rapport des Ventes PLS STORE</h2>
                             <p style={{ color: 'var(--text-muted)' }}>Généré le {new Date().toLocaleDateString('fr-FR')}</p>
                         </div>
                         <table className="admin-table">
@@ -175,7 +318,7 @@ export default function SalesHistory() {
                                                 return isNaN(d.getTime()) ? String(sale.date) : d.toLocaleString('fr-FR');
                                             })()}
                                         </td>
-                                        <td style={{ fontWeight: '500', color: 'white' }}>{String(sale.customerName || 'Client Inconnu')}</td>
+                                        <td style={{ fontWeight: '500', color: 'var(--text)' }}>{String(sale.customerName || 'Client Inconnu')}</td>
                                         <td>
                                             <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                                                 {(() => {

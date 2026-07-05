@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { Plus, Trash2, Printer, Download, CreditCard, User, Loader2 } from 'lucide-react';
 import Receipt from './Receipt';
+import toast from 'react-hot-toast';
 
 export default function Invoicing() {
     const [products, setProducts] = useState([]);
@@ -11,6 +12,7 @@ export default function Invoicing() {
     const [items, setItems] = useState([]);
     const [showReceipt, setShowReceipt] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [hasSaved, setHasSaved] = useState(false);
 
     useEffect(() => {
         const unsub = onSnapshot(collection(db, "products"), (snapshot) => {
@@ -50,30 +52,59 @@ export default function Invoicing() {
         }, 0).toFixed(2);
     };
 
-    const handleGenerateReceipt = async () => {
+    const handleGenerateReceipt = () => {
+        if (!customerName) {
+            toast.error("Veuillez renseigner le nom du client");
+            return;
+        }
+        if (items.length === 0) {
+            toast.error("Veuillez ajouter au moins un produit");
+            return;
+        }
+        setHasSaved(false);
+        setShowReceipt(true);
+    };
+
+    const handleSaveSale = async () => {
+        if (hasSaved) return;
         setIsSaving(true);
         try {
+            const saleItems = items.map(item => {
+                const product = products.find(p => p.id === item.productId);
+                return {
+                    productId: item.productId,
+                    name: product?.name || 'Produit inconnu',
+                    quantity: item.quantity,
+                    unitPrice: product ? parseFloat(product.price.replace(',', '.').split(' ')[0]) : 0
+                };
+            });
+
             const saleData = {
                 customerName: customerName,
-                items: items.map(item => {
-                    const product = products.find(p => p.id === item.productId);
-                    return {
-                        productId: item.productId,
-                        name: product?.name || 'Produit inconnu',
-                        quantity: item.quantity,
-                        unitPrice: product ? parseFloat(product.price.replace(',', '.').split(' ')[0]) : 0
-                    };
-                }),
+                items: saleItems,
                 total: parseFloat(calculateTotal()),
                 date: new Date().toISOString()
             };
 
+            // 1. Save the sale to history
             await addDoc(collection(db, "salesHistory"), saleData);
-            setShowReceipt(true);
+
+            // 2. Decrement stock levels of the products in Firestore
+            for (const item of items) {
+                const product = products.find(p => p.id === item.productId);
+                if (product) {
+                    const currentStock = Number(product.stock) || 0;
+                    const newStock = Math.max(0, currentStock - item.quantity);
+                    const productRef = doc(db, "products", item.productId);
+                    await updateDoc(productRef, { stock: newStock });
+                }
+            }
+
+            setHasSaved(true);
+            toast.success("Vente enregistrée avec succès dans l'historique !");
         } catch (error) {
-            console.error("Erreur d'enregistrement de la vente:", error);
-            // On peut afficher le reçu quand même ou gérer l'erreur
-            setShowReceipt(true);
+            console.error("Erreur de sauvegarde :", error);
+            toast.error("Erreur lors de la sauvegarde : " + error.message);
         } finally {
             setIsSaving(false);
         }
@@ -90,16 +121,62 @@ export default function Invoicing() {
     if (showReceipt) {
         return (
             <div style={{ padding: '20px' }}>
-                <button
-                    onClick={() => {
-                        setShowReceipt(false);
-                        setCustomerName('');
-                        setItems([]);
-                    }}
-                    style={{ marginBottom: '20px', padding: '10px 20px', borderRadius: '8px', background: 'var(--border)', color: 'white', border: 'none', cursor: 'pointer' }}
-                >
-                    Retour à la facturation (Nouvelle vente)
-                </button>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }} className="no-print">
+                    <button
+                        onClick={() => setShowReceipt(false)}
+                        disabled={hasSaved}
+                        style={{ 
+                            padding: '10px 20px', 
+                            borderRadius: '8px', 
+                            background: 'var(--surface)', 
+                            color: hasSaved ? 'var(--text-muted)' : 'white', 
+                            border: '1px solid var(--border)', 
+                            cursor: hasSaved ? 'not-allowed' : 'pointer' 
+                        }}
+                    >
+                        Retour / Modifier
+                    </button>
+                    
+                    <button
+                        onClick={handleSaveSale}
+                        disabled={isSaving || hasSaved}
+                        style={{ 
+                            padding: '10px 20px', 
+                            borderRadius: '8px', 
+                            background: hasSaved ? '#22c55e' : 'var(--primary)', 
+                            color: hasSaved ? 'white' : 'black', 
+                            border: 'none', 
+                            cursor: (isSaving || hasSaved) ? 'not-allowed' : 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontWeight: '600'
+                        }}
+                    >
+                        {isSaving ? <Loader2 className="animate-spin" size={18} /> : null}
+                        {hasSaved ? 'Vente enregistrée ✓' : 'Enregistrer la vente dans l\'historique'}
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            setShowReceipt(false);
+                            setCustomerName('');
+                            setItems([]);
+                            setHasSaved(false);
+                        }}
+                        style={{ 
+                            padding: '10px 20px', 
+                            borderRadius: '8px', 
+                            background: 'rgba(239, 68, 68, 0.1)', 
+                            color: '#ef4444', 
+                            border: '1px solid rgba(239, 68, 68, 0.2)', 
+                            cursor: 'pointer' 
+                        }}
+                    >
+                        Nouvelle vente (Réinitialiser)
+                    </button>
+                </div>
+                
                 <Receipt
                     customerName={customerName}
                     items={items.map(item => ({
@@ -148,13 +225,13 @@ export default function Invoicing() {
 
                         <div className="invoice-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             {items.map((item, index) => (
-                                <div key={index} className="invoice-item-row admin-card" style={{ padding: '16px', background: 'rgba(255,255,255,0.02)' }}>
+                                <div key={index} className="invoice-item-row admin-card" style={{ padding: '16px', background: 'var(--bg)' }}>
                                     <div className="admin-form-group">
                                         <label className="admin-label mobile-only">Article</label>
                                         <select
                                             value={item.productId}
                                             onChange={(e) => updateItem(index, 'productId', e.target.value)}
-                                            style={{ width: '100%', padding: '12px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', color: 'white' }}
+                                            style={{ width: '100%', padding: '12px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--text)' }}
                                         >
                                             {products.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                                         </select>
@@ -166,12 +243,12 @@ export default function Invoicing() {
                                             min="1"
                                             value={item.quantity}
                                             onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
-                                            style={{ width: '100%', padding: '12px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', color: 'white' }}
+                                            style={{ width: '100%', padding: '12px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--text)' }}
                                         />
                                     </div>
                                     <div className="item-price-total">
                                         <label className="admin-label mobile-only">Total</label>
-                                        <div style={{ textAlign: 'right', fontWeight: '600', color: 'white' }}>
+                                        <div style={{ textAlign: 'right', fontWeight: '600', color: 'var(--text)' }}>
                                             {products.find(p => p.id === item.productId) ? (parseFloat(products.find(p => p.id === item.productId).price.replace(',', '.').split(' ')[0]) * item.quantity).toFixed(2) : '0.00'} $
                                         </div>
                                     </div>
@@ -195,15 +272,15 @@ export default function Invoicing() {
 
                 <div className="invoice-summary-section">
                     <div className="admin-card">
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '24px', color: 'white' }}>Résumé</h3>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '24px', color: 'var(--text)' }}>Résumé</h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                                 <span>Sous-total</span>
-                                <span style={{ color: 'white', fontWeight: '500' }}>{calculateTotal()} $</span>
+                                <span style={{ color: 'var(--text)', fontWeight: '500' }}>{calculateTotal()} $</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)' }}>
                                 <span>Taxe (0%)</span>
-                                <span style={{ color: 'white', fontWeight: '500' }}>0.00 $</span>
+                                <span style={{ color: 'var(--text)', fontWeight: '500' }}>0.00 $</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '16px', fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>
                                 <span>Total</span>
